@@ -13,7 +13,9 @@ def __init__():
                                             ,passwd='123321Xu'
                                             ,db='stock'
                                             ,port=3306)
+    print(type(pool))
     conn = pool.connection()
+    print(type(conn))
     return conn
 
 
@@ -77,7 +79,7 @@ def spyder(conn):
 
 def main():
     conn=__init__()
-    spyder(conn)
+    # spyder(conn)
 
 
 if __name__ == '__main__':

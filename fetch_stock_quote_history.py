@@ -1,16 +1,8 @@
-import json
-import re
-import threading
 import traceback
-
-import pymysql
-from dbutils import persistent_db
-from kafka import KafkaProducer
 from kafka.errors import kafka_errors
-
-import Properties
 import baostock as bs
-import pandas as pd
+import Utils
+
 
 def get_stock_info():
     # 登陆系统
@@ -61,22 +53,25 @@ def get_stock_data(stock_full_name,frequency='d',adjustflag='3',start_date='',en
     print(data_list)
 
 def main():
-    producer = KafkaProducer(
-        bootstrap_servers=['hadoop100:9092'],
-        key_serializer=lambda k: json.dumps(k,ensure_ascii=False).encode('utf-8'),
-        value_serializer=lambda v: json.dumps(v,ensure_ascii=False).encode('utf-8'))
+    conf=func.get_config()
+
+    producer=func.get_kafka_producer(conf)
+
     count = 0
+
     for info in get_stock_info():
         count += 1
         future = producer.send(
             'test',
             key=f'{count}',  # 同一个key值，会被送至同一个分区
-            value='{' + f'{count}:{info}' + '}',
+            value='{' + f'data:{info}' + '}',
             partition=0)
-
         try:
             future.get(timeout=10)  # 监控是否发送成功
         except kafka_errors:  # 发送失败抛出kafka_errors
             traceback.format_exc()
+
+    producer.close()
+
 if __name__ == '__main__':
     main()

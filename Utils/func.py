@@ -1,12 +1,13 @@
+# coding=utf-8
 import json
 from configparser import ConfigParser
 
-from kafka import KafkaProducer
+from kf import KafkaProducer
 
 ##todo：考虑把方法写到Class里还是写道包里
 def get_config():
     conf = ConfigParser()
-    conf.read('./Config.ini')
+    conf.read('..Config.ini')
     return conf
 
 def get_kafka_producer (Config):

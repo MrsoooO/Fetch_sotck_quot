@@ -1,7 +1,6 @@
-import traceback
-from kafka.errors import kafka_errors
+﻿# coding=utf-8
 import baostock as bs
-import Utils
+from Utils.kf import Kafka
 
 
 def get_stock_info():
@@ -53,23 +52,9 @@ def get_stock_data(stock_full_name,frequency='d',adjustflag='3',start_date='',en
     print(data_list)
 
 def main():
-    conf=func.get_config()
+    producer=Kafka('./Config.ini').kafka_producer()
 
-    producer=func.get_kafka_producer(conf)
-
-    count = 0
-
-    for info in get_stock_info():
-        count += 1
-        future = producer.send(
-            'test',
-            key=f'{count}',  # 同一个key值，会被送至同一个分区
-            value='{' + f'data:{info}' + '}',
-            partition=0)
-        try:
-            future.get(timeout=10)  # 监控是否发送成功
-        except kafka_errors:  # 发送失败抛出kafka_errors
-            traceback.format_exc()
+    producer.send('test',"asdasd")
 
     producer.close()
 

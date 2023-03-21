@@ -1,6 +1,9 @@
 ﻿# coding=utf-8
 import baostock as bs
-from Utils.kf import Kafka
+import numpy as np
+import pandas as pd
+import mplfinance as mpl
+
 
 
 def get_stock_info():
@@ -43,20 +46,47 @@ def get_stock_data(stock_full_name,frequency='d',adjustflag='3',start_date='',en
     while (rs.error_code == '0') & rs.next():
         # 获取一条记录，将记录合并在一起
         data_list.append(rs.get_row_data())
-
+    data=pd.DataFrame(data_list,columns=rs.fields)
     #### 登出系统 ####
     bs.logout()
 
     #返回股票数据
+    return data
     # return data_list
-    print(data_list)
+    # print(data_list)
+
+def data_processing(data):
+    df = data[['date','open','high','low','close','volume']]
+    df.rename(columns={
+        'date':'Date',
+        'open':'Open',
+        'high':'High',
+        'low':'Low',
+        'close':'Close',
+        'volume':'Volume'
+    },inplace=True)
+    # df['Date'] = pd.to_datetime(df['Date'])
+
+    # df=df.sort_index()
+    return df
+def draw_k(df):
+    # print(df)
+    df['Date'] = pd.to_datetime(df['Date'])
+    df.set_index(['Date'], inplace=True)
+    df=df.astype(float)
+    # print(df)
+
+    mpl.plot(df.loc[:],type='candle',ylabel='price',style='binance',title='test',
+             mav=(5,21),volume=True,figratio=(16,8),figscale=2,ylabel_lower='Volume',savefig=f'./{np.random.random(1)}.png')
 
 def main():
-    producer=Kafka('./Config.ini').kafka_producer()
-
-    producer.send('test',"asdasd")
-
-    producer.close()
-
+    # producer=Kafka('./Config.ini').kafka_producer()
+    #
+    # producer.send('test',"asdasd")
+    #
+    # producer.close()
+    data=get_stock_data("sh.600000")
+    df=data_processing(data)
+    draw_k(df)
 if __name__ == '__main__':
     main()

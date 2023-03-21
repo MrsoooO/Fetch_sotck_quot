@@ -6,6 +6,7 @@ import mplfinance as mpl
 
 
 
+
 def get_stock_info():
     # 登陆系统
     lg = bs.login()
@@ -65,9 +66,6 @@ def data_processing(data):
         'close':'Close',
         'volume':'Volume'
     },inplace=True)
-    # df['Date'] = pd.to_datetime(df['Date'])
-
-    # df=df.sort_index()
     return df
 def draw_k(df):
     # print(df)
@@ -85,8 +83,9 @@ def main():
     # producer.send('test',"asdasd")
     #
     # producer.close()
-    data=get_stock_data("sh.600000")
+    data=get_stock_data("sh.600000",start_date='2023-01-01')
     df=data_processing(data)
     draw_k(df)
+    #https://blog.csdn.net/Shepherdppz/article/details/117575286
 if __name__ == '__main__':
     main()

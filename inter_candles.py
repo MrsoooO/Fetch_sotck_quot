@@ -1,6 +1,7 @@
 #encoding=utf-8
 import mplfinance as mpf
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 class InterCandle:
     def __init__(self, data, my_style):
@@ -9,7 +10,7 @@ class InterCandle:
         self.idx_start=0
         self.press=False
         self.xpress=None
-        self.fig = mpf.figure(style=my_style, figsize=(12, 8), facecolor=(0.82, 0.83, 0.85),dpi=200)
+        self.fig = mpf.figure(style=my_style, figsize=(12, 8), facecolor=(0.82, 0.83, 0.85),dpi=100)
         fig = self.fig
         self.ax1 = fig.add_axes([0.08, 0.25, 0.88, 0.60])
         self.ax2 = fig.add_axes([0.08, 0.15, 0.88, 0.10], sharex=self.ax1)
@@ -36,9 +37,11 @@ class InterCandle:
                  ax=self.ax1,
                  volume=self.ax2,
                  type='candle',
-                 datetime_format='%Y-%m',
-                 xrotation=0)
-        mpf.switch_backend('agg')
+                 # datetime_format='%Y-%m',
+                 # xrotation=0)
+                 )
+        mpl.use('TkAgg')
+        # plt.switch_backend('gtk3agg')
         self.fig.show()
 
     def on_press(self,event):

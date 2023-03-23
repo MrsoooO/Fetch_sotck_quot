@@ -65,6 +65,9 @@ def data_processing(data):
         'close':'Close',
         'volume':'Volume'
     },inplace=True)
+    # data['Date'] = pd.to_datetime(data['Date'])
+    # data.set_index(['Date'], inplace=True)
+    # df = data.astype(float)
     return df
 
 def main():
